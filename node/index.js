@@ -6,6 +6,7 @@ const db = require("./config");
 const featured = db.collection("featured");
 const dessert = db.collection("dessert");
 const chicken = db.collection("chicken");
+const category = db.collection("category");
 
 const app = express();
 app.use(express.json());
@@ -59,6 +60,13 @@ app.post("/create_chicken", async (req, res) => {
     const data = req.body;
     await chicken.add(data);
     res.send({ msg: "success", status: 201 });
+});
+
+//dessert
+app.get("/category", async (req, res) => {
+    const snapshot = await category.get();
+    const list = snapshot.docs.map((doc) => doc.data());
+    res.status(200).send(list);
 });
 
 //error 404

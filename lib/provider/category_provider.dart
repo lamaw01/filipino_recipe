@@ -2,22 +2,22 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import '../model/recipe.dart';
-import '../repository/recipe_repo.dart';
+import '../model/category.dart';
+import '../repository/category_repo.dart';
 
-class RecipeProvider with ChangeNotifier {
+class CategoryProvider with ChangeNotifier {
   var _loading = true;
   bool get loading => _loading;
 
-  var _recipe = <Recipe>[];
-  List<Recipe> get recipe => _recipe;
+  var _category = <Category>[];
+  List<Category> get category => _category;
 
-  Future<void> getRecipe() async {
+  Future<void> getCategory() async {
     if (!_loading) {
       updateLoading(true);
     }
     try {
-      _recipe = await RecipeRepo.get();
+      _category = await CategoryRepo.get();
     } catch (e) {
       log(e.toString());
     } finally {

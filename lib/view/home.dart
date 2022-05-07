@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../provider/category_provider.dart';
 import '../provider/recipe_provider.dart';
 import '../services/firebase_storage.dart';
 
@@ -14,50 +15,68 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late RecipeProvider recipeProvider;
   @override
   void initState() {
     super.initState();
-    recipeProvider = Provider.of<RecipeProvider>(context, listen: false);
-    recipeProvider.getRecipe();
+    init();
+  }
+
+  Future<void> init() async {
+    await context.read<RecipeProvider>().getRecipe();
+    await context.read<CategoryProvider>().getCategory();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Filipino Recipes', style: GoogleFonts.rubik()),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                "Featured",
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.rubik(
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.w600,
+      body: RefreshIndicator(
+        onRefresh: init,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              pinned: false,
+              snap: false,
+              floating: false,
+              title: Text('Filipino Recipes', style: GoogleFonts.rubik()),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 10.0),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  "Featured",
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.rubik(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(
-              // color: Colors.pink,
-              height: 425.0,
-              child: RecipeMain(),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 425.0,
+                child: FeaturedWidget(),
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                "Desserts",
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.rubik(
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.w600,
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  "Category",
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.rubik(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
+            ),
+            const SliverPadding(
+              padding: EdgeInsets.all(10.0),
+              sliver: CategoryWidget(),
             ),
           ],
         ),
@@ -66,19 +85,79 @@ class _HomeState extends State<Home> {
   }
 }
 
-class RecipeMain extends StatelessWidget {
-  const RecipeMain({Key? key}) : super(key: key);
+class CategoryWidget extends StatelessWidget {
+  const CategoryWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final recipeProvider = Provider.of<RecipeProvider>(context);
-    if (recipeProvider.status == Status.loading) {
+    final provider = Provider.of<CategoryProvider>(context);
+    if (provider.loading) {
+      return const SliverToBoxAdapter(
+          child: Center(child: CircularProgressIndicator()));
+    } else {
+      return SliverGrid(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 5.0,
+          crossAxisSpacing: 5.0,
+          childAspectRatio: 1.6625,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (ctx, i) {
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                FutureBuilder<String>(
+                  future: FBStorage.getImageUrl(
+                      'category', provider.category[i].image),
+                  builder: (ctx, snapshot) {
+                    if (snapshot.hasData) {
+                      return Opacity(
+                        opacity: 0.8,
+                        child: FadeInImage(
+                          fit: BoxFit.cover,
+                          placeholder: MemoryImage(kTransparentImage),
+                          image: NetworkImage(snapshot.data!),
+                        ),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    provider.category[i].name,
+                    style: GoogleFonts.rubik(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+          childCount: provider.category.length,
+        ),
+      );
+    }
+  }
+}
+
+class FeaturedWidget extends StatelessWidget {
+  const FeaturedWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<RecipeProvider>(context);
+    if (provider.loading) {
       return const Center(child: CircularProgressIndicator());
-    } else if (recipeProvider.status == Status.error) {
-      return const Center(child: Text('Error'));
     } else {
       return ListView.builder(
-        itemCount: recipeProvider.recipe.length,
+        physics: const BouncingScrollPhysics(),
+        itemCount: provider.recipe.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (ctx, i) {
           return Padding(
@@ -87,14 +166,34 @@ class RecipeMain extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                RecipeImage(image: recipeProvider.recipe[i].image),
+                FutureBuilder<String>(
+                  future:
+                      FBStorage.getImageUrl('images', provider.recipe[i].image),
+                  builder: (ctx, snapshot) {
+                    if (snapshot.hasData) {
+                      return FadeInImage(
+                        height: 375.0,
+                        width: 270.0,
+                        fit: BoxFit.cover,
+                        placeholder: MemoryImage(kTransparentImage),
+                        image: NetworkImage(snapshot.data!),
+                        placeholderFit: BoxFit.fitWidth,
+                      );
+                    } else {
+                      return const SizedBox(
+                        height: 375.0,
+                        width: 270.0,
+                      );
+                    }
+                  },
+                ),
                 const SizedBox(height: 5.0),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        recipeProvider.recipe[i].name,
+                        provider.recipe[i].name,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.rubik(
                           fontSize: 18.0,
@@ -103,7 +202,7 @@ class RecipeMain extends StatelessWidget {
                       ),
                       Text(
                         "Cook Time: " +
-                            recipeProvider.recipe[i].cookTime.toString() +
+                            provider.recipe[i].cookTime.toString() +
                             " min",
                         style: GoogleFonts.rubik(
                           fontSize: 14.0,
@@ -119,34 +218,5 @@ class RecipeMain extends StatelessWidget {
         },
       );
     }
-  }
-}
-
-class RecipeImage extends StatelessWidget {
-  const RecipeImage({Key? key, required this.image}) : super(key: key);
-  final String image;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: FBStorage.downloadUrl(image),
-      builder: (ctx, snapshot) {
-        if (snapshot.hasData) {
-          return FadeInImage(
-            height: 375.0,
-            width: 270.0,
-            fit: BoxFit.cover,
-            placeholder: MemoryImage(kTransparentImage),
-            image: NetworkImage(snapshot.data!),
-            placeholderFit: BoxFit.fitWidth,
-          );
-        } else {
-          return const SizedBox(
-            height: 375.0,
-            width: 270.0,
-          );
-        }
-      },
-    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'locator.dart';
+import 'provider/category_provider.dart';
 import 'provider/recipe_provider.dart';
 import 'view/home.dart';
 
@@ -19,6 +20,9 @@ Future<void> main() async {
         providers: [
           ChangeNotifierProvider<RecipeProvider>(
             create: (_) => RecipeProvider(),
+          ),
+          ChangeNotifierProvider<CategoryProvider>(
+            create: (_) => CategoryProvider(),
           ),
         ],
         child: const MyApp(),
