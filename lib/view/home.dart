@@ -1,9 +1,10 @@
-import 'package:filipino_recipe/services/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../provider/recipe_provider.dart';
+import '../services/firebase_storage.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -25,9 +26,42 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: Text('Filipino Recipes', style: GoogleFonts.rubik()),
       ),
-      body: const RecipeMain(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "Featured",
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.rubik(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(
+              // color: Colors.pink,
+              height: 425.0,
+              child: RecipeMain(),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "Desserts",
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.rubik(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -43,51 +77,46 @@ class RecipeMain extends StatelessWidget {
     } else if (recipeProvider.status == Status.error) {
       return const Center(child: Text('Error'));
     } else {
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: ListView.separated(
-          itemCount: recipeProvider.recipe.length,
-          separatorBuilder: (ctx, i) => const SizedBox(width: 10.0),
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (ctx, i) {
-            return Column(
+      return ListView.builder(
+        itemCount: recipeProvider.recipe.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (ctx, i) {
+          return Padding(
+            padding: EdgeInsets.only(left: i == 0 ? 10.0 : 0.0, right: 10.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 RecipeImage(image: recipeProvider.recipe[i].image),
-                SizedBox(
-                  width: 270.0,
-                  height: 50.0,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          recipeProvider.recipe[i].name,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w600,
-                          ),
+                const SizedBox(height: 5.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        recipeProvider.recipe[i].name,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.rubik(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
                         ),
-                        Text(
-                          "Cook Time: " +
-                              recipeProvider.recipe[i].cookTime.toString() +
-                              " min",
-                          style: const TextStyle(
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      ),
+                      Text(
+                        "Cook Time: " +
+                            recipeProvider.recipe[i].cookTime.toString() +
+                            " min",
+                        style: GoogleFonts.rubik(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
       );
     }
   }

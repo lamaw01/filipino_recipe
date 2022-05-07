@@ -30,6 +30,8 @@
 .pub-cache/
 .pub/
 /build/
+/node/config.js
+/node/package-lock.json
 
 # Web related
 lib/generated_plugin_registrant.dart

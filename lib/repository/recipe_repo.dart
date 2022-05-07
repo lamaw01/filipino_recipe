@@ -9,7 +9,7 @@ import '../model/recipe.dart';
 class RecipeRepo {
   static Future<List<Recipe>> get() async {
     var response = await http
-        .get(Uri.parse(Config.server + "/recipe"))
+        .get(Uri.parse(Config.server + "/featured"))
         .timeout(const Duration(seconds: 8));
     log(response.statusCode.toString());
     log(response.body);
