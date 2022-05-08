@@ -1,11 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import '../model/recipe.dart';
 import '../repository/recipe_repo.dart';
 
-class RecipeProvider with ChangeNotifier {
+class FeaturedProvider with ChangeNotifier {
   var _loading = true;
   bool get loading => _loading;
 
@@ -19,7 +17,7 @@ class RecipeProvider with ChangeNotifier {
     try {
       _recipe = await RecipeRepo.get();
     } catch (e) {
-      log(e.toString());
+      debugPrint(e.toString());
     } finally {
       updateLoading(false);
     }

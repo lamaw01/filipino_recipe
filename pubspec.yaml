@@ -45,6 +45,8 @@ dependencies:
 
   transparent_image: ^2.0.0
 
+  cached_network_image: ^3.2.0
+
   firebase_storage: ^10.2.15
 
   firebase_core: ^1.16.0

@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 
 import 'locator.dart';
 import 'provider/category_provider.dart';
-import 'provider/recipe_provider.dart';
+import 'provider/featured_provider.dart';
+import 'provider/random_provider.dart';
 import 'view/home.dart';
 
 Future<void> main() async {
@@ -18,11 +19,14 @@ Future<void> main() async {
     runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<RecipeProvider>(
-            create: (_) => RecipeProvider(),
+          ChangeNotifierProvider<FeaturedProvider>(
+            create: (_) => FeaturedProvider(),
           ),
           ChangeNotifierProvider<CategoryProvider>(
             create: (_) => CategoryProvider(),
+          ),
+          ChangeNotifierProvider<RandomProvider>(
+            create: (_) => RandomProvider(),
           ),
         ],
         child: const MyApp(),

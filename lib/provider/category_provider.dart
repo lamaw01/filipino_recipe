@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import '../model/category.dart';
@@ -19,7 +17,7 @@ class CategoryProvider with ChangeNotifier {
     try {
       _category = await CategoryRepo.get();
     } catch (e) {
-      log(e.toString());
+      debugPrint(e.toString());
     } finally {
       updateLoading(false);
     }

@@ -1,10 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../provider/category_provider.dart';
-import '../provider/recipe_provider.dart';
+import '../provider/featured_provider.dart';
+import '../provider/random_provider.dart';
 import '../services/firebase_storage.dart';
 
 class Home extends StatefulWidget {
@@ -18,12 +20,14 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    context.read<RandomProvider>().initRandom();
     init();
   }
 
   Future<void> init() async {
-    await context.read<RecipeProvider>().getRecipe();
+    await context.read<FeaturedProvider>().getRecipe();
     await context.read<CategoryProvider>().getCategory();
+    await context.read<RandomProvider>().getRandom();
   }
 
   @override
@@ -38,9 +42,6 @@ class _HomeState extends State<Home> {
               snap: false,
               floating: false,
               title: Text('Filipino Recipes', style: GoogleFonts.rubik()),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 10.0),
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -63,7 +64,7 @@ class _HomeState extends State<Home> {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.only(left: 10.0, top: 10.0),
                 child: Text(
                   "Category",
                   overflow: TextOverflow.ellipsis,
@@ -78,10 +79,108 @@ class _HomeState extends State<Home> {
               padding: EdgeInsets.all(10.0),
               sliver: CategoryWidget(),
             ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Consumer<RandomProvider>(
+                  builder: (ctx, provider, child) {
+                    return Text(
+                      provider.listRecipe[provider.randomNum],
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.rubik(
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 225.0,
+                child: RandomWidget(),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+}
+
+class FeaturedWidget extends StatelessWidget {
+  const FeaturedWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<FeaturedProvider>(context);
+    if (provider.loading) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        itemCount: provider.recipe.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (ctx, i) {
+          return Padding(
+            padding: EdgeInsets.only(left: i == 0 ? 10.0 : 0.0, right: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FutureBuilder<String>(
+                  future:
+                      FBStorage.getImageUrl('images', provider.recipe[i].image),
+                  builder: (ctx, snapshot) {
+                    if (snapshot.hasData) {
+                      return FadeInImage(
+                        height: 375.0,
+                        width: 270.0,
+                        fit: BoxFit.cover,
+                        placeholder: MemoryImage(kTransparentImage),
+                        image: CachedNetworkImageProvider(snapshot.data!),
+                        placeholderFit: BoxFit.fitWidth,
+                      );
+                    } else {
+                      return const SizedBox(
+                        height: 375.0,
+                        width: 270.0,
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(height: 5.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        provider.recipe[i].name,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.rubik(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        "Cook Time: " +
+                            provider.recipe[i].cookTime.toString() +
+                            " min",
+                        style: GoogleFonts.rubik(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 }
 
@@ -117,7 +216,7 @@ class CategoryWidget extends StatelessWidget {
                         child: FadeInImage(
                           fit: BoxFit.cover,
                           placeholder: MemoryImage(kTransparentImage),
-                          image: NetworkImage(snapshot.data!),
+                          image: CachedNetworkImageProvider(snapshot.data!),
                         ),
                       );
                     } else {
@@ -146,18 +245,18 @@ class CategoryWidget extends StatelessWidget {
   }
 }
 
-class FeaturedWidget extends StatelessWidget {
-  const FeaturedWidget({Key? key}) : super(key: key);
+class RandomWidget extends StatelessWidget {
+  const RandomWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<RecipeProvider>(context);
+    final provider = Provider.of<RandomProvider>(context);
     if (provider.loading) {
       return const Center(child: CircularProgressIndicator());
     } else {
       return ListView.builder(
         physics: const BouncingScrollPhysics(),
-        itemCount: provider.recipe.length,
+        itemCount: provider.randomRecipe.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (ctx, i) {
           return Padding(
@@ -167,22 +266,22 @@ class FeaturedWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 FutureBuilder<String>(
-                  future:
-                      FBStorage.getImageUrl('images', provider.recipe[i].image),
+                  future: FBStorage.getImageUrl(
+                      'thumbnail', provider.randomRecipe[i].image),
                   builder: (ctx, snapshot) {
                     if (snapshot.hasData) {
                       return FadeInImage(
-                        height: 375.0,
-                        width: 270.0,
                         fit: BoxFit.cover,
+                        height: 102.0,
+                        width: 170.0,
                         placeholder: MemoryImage(kTransparentImage),
-                        image: NetworkImage(snapshot.data!),
+                        image: CachedNetworkImageProvider(snapshot.data!),
                         placeholderFit: BoxFit.fitWidth,
                       );
                     } else {
                       return const SizedBox(
-                        height: 375.0,
-                        width: 270.0,
+                        height: 102.0,
+                        width: 170.0,
                       );
                     }
                   },
@@ -193,19 +292,19 @@ class FeaturedWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        provider.recipe[i].name,
+                        provider.randomRecipe[i].name,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.rubik(
-                          fontSize: 18.0,
+                          fontSize: 15.0,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
                         "Cook Time: " +
-                            provider.recipe[i].cookTime.toString() +
+                            provider.randomRecipe[i].cookTime.toString() +
                             " min",
                         style: GoogleFonts.rubik(
-                          fontSize: 14.0,
+                          fontSize: 12.0,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
