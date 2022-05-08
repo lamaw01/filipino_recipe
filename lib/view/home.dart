@@ -98,7 +98,7 @@ class _HomeState extends State<Home> {
             ),
             const SliverToBoxAdapter(
               child: SizedBox(
-                height: 225.0,
+                height: 149.0,
                 child: RandomWidget(),
               ),
             ),
