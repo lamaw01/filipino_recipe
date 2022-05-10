@@ -14,6 +14,7 @@ class Recipe {
   Recipe({
     required this.id,
     required this.image,
+    required this.description,
     required this.ingredients,
     required this.instructions,
     required this.name,
@@ -23,6 +24,7 @@ class Recipe {
 
   String id;
   String image;
+  String description;
   List<String> ingredients;
   List<String> instructions;
   String name;
@@ -32,6 +34,7 @@ class Recipe {
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
         id: json["id"],
         image: json["image"],
+        description: json["description"],
         ingredients: List<String>.from(json["ingredients"].map((x) => x)),
         instructions: List<String>.from(json["instructions"].map((x) => x)),
         name: json["name"],
@@ -42,6 +45,7 @@ class Recipe {
   Map<String, dynamic> toJson() => {
         "id": id,
         "image": image,
+        "description": description,
         "ingredients": List<dynamic>.from(ingredients.map((x) => x)),
         "instructions": List<dynamic>.from(instructions.map((x) => x)),
         "name": name,

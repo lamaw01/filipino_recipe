@@ -21,8 +21,7 @@ class RandomProvider with ChangeNotifier {
 
   void initRandom() {
     _randomNum = random.nextInt(2);
-    debugPrint(
-        "initRandom " + _randomNum.toString() + " " + _listRecipe[_randomNum]);
+    // _randomNum = 1;
   }
 
   Future<void> getRandom() async {

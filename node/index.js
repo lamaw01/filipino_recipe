@@ -1,72 +1,77 @@
 const express = require("express");
 const cors = require("cors");
+const { v4: uuidv4 } = require('uuid');
 
-//firebase config
 const db = require("./config");
-const featured = db.collection("featured");
-const dessert = db.collection("dessert");
-const chicken = db.collection("chicken");
-const category = db.collection("category");
-
 const app = express();
 app.use(express.json());
 app.use(cors(
     {
-        origin: "http://127.0.0.1:3000",
+        origin: "http://192.168.0.15:80",
         methods: ["GET", "POST"],
     }
 ));
 
-//featured
+//get all featured recipe limit 3
 app.get("/featured", async (req, res) => {
-    const snapshot = await featured.get();
+    const snapshot = await db.collection("featured").orderBy("timestamp", "desc").limit(3).get();;
     const list = snapshot.docs.map((doc) => doc.data());
     res.status(200).send(list);
 });
 
-app.post("/create_featured", async (req, res) => {
-    const data = req.body;
-    const name = req.body.name;
-    if (name == null) {
-        res.send({ msg: "parameters not met", status: 400 });
-    } else {
-        await featured.add(data);
-        res.send({ msg: "added new featured", status: 201, data: data });
-    }
-
-});
-
-//dessert
-app.get("/dessert", async (req, res) => {
-    const snapshot = await dessert.get();
+//get all recipe sorted by name
+app.get("/recipe", async (req, res) => {
+    const snapshot = await db.collection("recipe").orderBy("name", "asc").get();
     const list = snapshot.docs.map((doc) => doc.data());
     res.status(200).send(list);
 });
 
-app.post("/create_dessert", async (req, res) => {
-    const data = req.body;
-    const name = req.body.name;
-    if (name == null) {
-        res.send({ msg: "parameters not met", status: 400 });
-    } else {
-        await dessert.add(data);
-        res.send({ msg: "success", status: 201, data: data });
-    }
-
+//get new recipe limit 5 with timestamp
+app.get("/new", async (req, res) => {
+    const snapshot = await db.collection("recipe").orderBy("timestamp", "desc").limit(5).get();
+    const list = snapshot.docs.map((doc) => doc.data());
+    res.status(200).send(list);
 });
 
-//chicken
-app.post("/create_chicken", async (req, res) => {
-    const data = req.body;
-    await chicken.add(data);
-    res.send({ msg: "success", status: 201 });
-});
-
-//dessert
+//get categories
 app.get("/category", async (req, res) => {
-    const snapshot = await category.get();
+    const snapshot = await db.collection("category").get();
     const list = snapshot.docs.map((doc) => doc.data());
     res.status(200).send(list);
+});
+
+//get recipe with category for random
+app.get("/recipe/:category", async (req, res) => {
+    const category = req.params.category;
+    const snapshot = await db.collection("recipe").where("category", "==", category).get();
+    const list = snapshot.docs.map((doc) => doc.data());
+    res.status(200).send(list);
+});
+
+//add new recipe
+app.post("/add_recipe", async (req, res) => {
+    const data = req.body;
+    const name = req.body.name;
+    if (name == null) {
+        res.send({ msg: "parameters not met", status: 400 });
+    } else {
+        const timestamp = new Date().getTime();;
+        await db.collection("recipe").add({ id: uuidv4(), timestamp: timestamp, ...data });
+        res.status(201).send({ msg: "added new recipe", status: 201 });
+    }
+});
+
+//add new featured
+app.post("/add_featured", async (req, res) => {
+    const data = req.body;
+    const name = req.body.name;
+    if (name == null) {
+        res.send({ msg: "parameters not met", status: 400 });
+    } else {
+        const timestamp = new Date().getTime();;
+        await db.collection("featured").add({ id: uuidv4(), timestamp: timestamp, ...data });
+        res.status(201).send({ msg: "added new featured", status: 201 });
+    }
 });
 
 //error 404
@@ -84,8 +89,8 @@ app.use((err, req, res, next) => {
     })
 });
 
-var port = process.env.PORT || 3000;
+// var port = process.env.PORT || 80;
 
-app.listen(port, function () {
-    console.log("listening on port htts://localhost/3000")
+app.listen('80', '192.168.0.15', function () {
+    console.log("listening on port http://192.168.0.15:80")
 })

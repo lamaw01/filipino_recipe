@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'locator.dart';
 import 'provider/category_provider.dart';
 import 'provider/featured_provider.dart';
+import 'provider/new_provider.dart';
 import 'provider/random_provider.dart';
 import 'view/home.dart';
 
@@ -15,7 +15,6 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
   ]).then((_) async {
     await Firebase.initializeApp();
-    await setup();
     runApp(
       MultiProvider(
         providers: [
@@ -27,6 +26,9 @@ Future<void> main() async {
           ),
           ChangeNotifierProvider<RandomProvider>(
             create: (_) => RandomProvider(),
+          ),
+          ChangeNotifierProvider<NewProvider>(
+            create: (_) => NewProvider(),
           ),
         ],
         child: const MyApp(),
