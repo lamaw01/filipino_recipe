@@ -3,28 +3,30 @@ import 'package:flutter/material.dart';
 import '../model/recipe.dart';
 import '../repository/new_repo.dart';
 
+enum NewState { loading, error, success }
+
 class NewProvider with ChangeNotifier {
-  var _loading = true;
-  bool get loading => _loading;
+  var _state = NewState.loading;
+  NewState get state => _state;
 
   var _newRecipe = <Recipe>[];
   List<Recipe> get newRecipe => _newRecipe;
 
   Future<void> getNew() async {
-    if (!_loading) {
-      updateLoading(true);
+    if (_state != NewState.loading) {
+      updateState(NewState.loading);
     }
     try {
       _newRecipe = await NewRepo.get();
+      updateState(NewState.success);
     } catch (e) {
       debugPrint(e.toString());
-    } finally {
-      updateLoading(false);
+      updateState(NewState.error);
     }
   }
 
-  void updateLoading(bool value) {
-    _loading = value;
+  void updateState(NewState state) {
+    _state = state;
     notifyListeners();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -8,7 +9,7 @@ import '../provider/category_provider.dart';
 import '../provider/featured_provider.dart';
 import '../provider/new_provider.dart';
 import '../provider/random_provider.dart';
-import '../services/firebase_storage.dart';
+import 'webview_widget.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -35,6 +36,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    // var name = "https://panlasangpinoy.com";
     return Scaffold(
       backgroundColor: Colors.white,
       body: RefreshIndicator(
@@ -136,6 +138,57 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
               ),
             ),
             const NewWidget(),
+            SliverToBoxAdapter(
+              child: Container(
+                height: 50.0,
+                color: Colors.black87,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Recipes and Images are all credit to',
+                      style: GoogleFonts.rubik(
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'Panlasang Pinoy ',
+                            style: GoogleFonts.rubik(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'https://panlasangpinoy.com',
+                            style: GoogleFonts.rubik(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (ctx) => const WebViewWidget(),
+                                  ),
+                                );
+                              },
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -146,14 +199,26 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   bool get wantKeepAlive => true;
 }
 
+// class WebUrl with ChangeNotifier {
+//   var _url = "https://panlasangpinoy.com";
+//   String get url => _url;
+
+//   void updateUrl(String newUrl) {
+//     _url = newUrl;
+//     notifyListeners();
+//   }
+// }
+
 class FeaturedWidget extends StatelessWidget {
   const FeaturedWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<FeaturedProvider>(context);
-    if (provider.loading) {
+    if (provider.state == FeaturedState.loading) {
       return const Center(child: CircularProgressIndicator());
+    } else if (provider.state == FeaturedState.error) {
+      return const Center(child: Text('Error getting data'));
     } else {
       return ListView.builder(
         physics: const BouncingScrollPhysics(),
@@ -166,25 +231,15 @@ class FeaturedWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                FutureBuilder<String>(
-                  future:
-                      FBStorage.getImageUrl('images', provider.recipe[i].image),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.hasData) {
-                      return FadeInImage(
-                        height: 375.0,
-                        width: 270.0,
-                        fit: BoxFit.cover,
-                        placeholder: MemoryImage(kTransparentImage),
-                        image: CachedNetworkImageProvider(snapshot.data!),
-                        placeholderFit: BoxFit.fitWidth,
-                      );
-                    } else {
-                      return const SizedBox(
-                        height: 375.0,
-                        width: 270.0,
-                      );
-                    }
+                FadeInImage(
+                  height: 375.0,
+                  width: 270.0,
+                  fit: BoxFit.cover,
+                  placeholder: MemoryImage(kTransparentImage),
+                  image: CachedNetworkImageProvider(provider.recipe[i].url),
+                  placeholderFit: BoxFit.fitWidth,
+                  imageErrorBuilder: (ctx, obj, stc) {
+                    return const SizedBox();
                   },
                 ),
                 const SizedBox(height: 5.0),
@@ -227,8 +282,10 @@ class RandomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RandomProvider>(context);
-    if (provider.loading) {
+    if (provider.state == RandomState.loading) {
       return const Center(child: CircularProgressIndicator());
+    } else if (provider.state == RandomState.error) {
+      return const Center(child: Text('Error getting data'));
     } else {
       return ListView.builder(
         physics: const BouncingScrollPhysics(),
@@ -241,25 +298,16 @@ class RandomWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                FutureBuilder<String>(
-                  future: FBStorage.getImageUrl(
-                      'thumbnail', provider.randomRecipe[i].image),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.hasData) {
-                      return FadeInImage(
-                        fit: BoxFit.cover,
-                        height: 102.0,
-                        width: 170.0,
-                        placeholder: MemoryImage(kTransparentImage),
-                        image: CachedNetworkImageProvider(snapshot.data!),
-                        placeholderFit: BoxFit.fitWidth,
-                      );
-                    } else {
-                      return const SizedBox(
-                        height: 102.0,
-                        width: 170.0,
-                      );
-                    }
+                FadeInImage(
+                  fit: BoxFit.cover,
+                  height: 102.0,
+                  width: 170.0,
+                  placeholder: MemoryImage(kTransparentImage),
+                  image:
+                      CachedNetworkImageProvider(provider.randomRecipe[i].url),
+                  placeholderFit: BoxFit.fitWidth,
+                  imageErrorBuilder: (ctx, obj, stc) {
+                    return const SizedBox();
                   },
                 ),
                 const SizedBox(height: 5.0),
@@ -302,9 +350,11 @@ class CategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<CategoryProvider>(context);
-    if (provider.loading) {
+    if (provider.state == CategoryState.loading) {
       return const SliverToBoxAdapter(
           child: Center(child: CircularProgressIndicator()));
+    } else if (provider.state == CategoryState.error) {
+      return const Center(child: Text('Error getting data'));
     } else {
       return SliverGrid(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -357,10 +407,11 @@ class NewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<NewProvider>(context);
-
-    if (provider.loading) {
+    if (provider.state == NewState.loading) {
       return const SliverToBoxAdapter(
           child: Center(child: CircularProgressIndicator()));
+    } else if (provider.state == FeaturedState.error) {
+      return const Center(child: Text('Error getting data'));
     } else {
       return SliverList(
         delegate: SliverChildBuilderDelegate(
