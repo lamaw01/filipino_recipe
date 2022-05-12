@@ -36,17 +36,24 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: init,
         child: CustomScrollView(
-          cacheExtent: 100,
           slivers: [
             //AppBar
             SliverAppBar(
+              centerTitle: true,
               pinned: false,
               snap: false,
               floating: false,
-              title: Text('Filipino Recipes', style: GoogleFonts.rubik()),
+              title: Text(
+                'Filipino Recipes',
+                style: GoogleFonts.rubik(
+                  color: Colors.black,
+                ),
+              ),
+              backgroundColor: Colors.white,
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 10.0)),
             //Featured
@@ -311,23 +318,16 @@ class CategoryWidget extends StatelessWidget {
             return Stack(
               alignment: Alignment.center,
               children: [
-                FutureBuilder<String>(
-                  future: FBStorage.getImageUrl(
-                      'category', provider.category[i].image),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.hasData) {
-                      return Opacity(
-                        opacity: 0.8,
-                        child: FadeInImage(
-                          fit: BoxFit.cover,
-                          placeholder: MemoryImage(kTransparentImage),
-                          image: CachedNetworkImageProvider(snapshot.data!),
-                        ),
-                      );
-                    } else {
+                Opacity(
+                  opacity: 0.8,
+                  child: FadeInImage(
+                    fit: BoxFit.cover,
+                    placeholder: MemoryImage(kTransparentImage),
+                    image: CachedNetworkImageProvider(provider.category[i].url),
+                    imageErrorBuilder: (ctx, obj, stc) {
                       return const SizedBox();
-                    }
-                  },
+                    },
+                  ),
                 ),
                 Align(
                   alignment: Alignment.center,
@@ -357,6 +357,7 @@ class NewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<NewProvider>(context);
+
     if (provider.loading) {
       return const SliverToBoxAdapter(
           child: Center(child: CircularProgressIndicator()));
@@ -370,25 +371,16 @@ class NewWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  FutureBuilder<String>(
-                    future: FBStorage.getImageUrl(
-                        'thumbnail', provider.newRecipe[i].image),
-                    builder: (ctx, snapshot) {
-                      if (snapshot.hasData) {
-                        return FadeInImage(
-                          fit: BoxFit.cover,
-                          height: 160.0,
-                          width: 266.0,
-                          placeholder: MemoryImage(kTransparentImage),
-                          image: CachedNetworkImageProvider(snapshot.data!),
-                          placeholderFit: BoxFit.fitWidth,
-                        );
-                      } else {
-                        return const SizedBox(
-                          height: 160.0,
-                          width: 266.0,
-                        );
-                      }
+                  FadeInImage(
+                    fit: BoxFit.cover,
+                    height: 160.0,
+                    width: 266.0,
+                    placeholder: MemoryImage(kTransparentImage),
+                    image:
+                        CachedNetworkImageProvider(provider.newRecipe[i].url),
+                    placeholderFit: BoxFit.fitWidth,
+                    imageErrorBuilder: (ctx, obj, stc) {
+                      return const SizedBox();
                     },
                   ),
                   const SizedBox(height: 10.0),
