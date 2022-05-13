@@ -7,7 +7,7 @@ import 'provider/category_provider.dart';
 import 'provider/featured_provider.dart';
 import 'provider/new_provider.dart';
 import 'provider/random_provider.dart';
-import 'view/home.dart';
+import 'view/home/home.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +46,12 @@ class MyApp extends StatelessWidget {
       title: 'Filipino Recipe',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Rubik',
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
       ),
       home: const Home(),
     );

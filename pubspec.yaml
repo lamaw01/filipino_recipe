@@ -39,7 +39,7 @@ dependencies:
 
   http: ^0.13.4
 
-  google_fonts: ^2.3.2
+  # google_fonts: ^2.3.2
 
   transparent_image: ^2.0.0
 
@@ -72,6 +72,16 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: Rubik
+      fonts:
+        - asset: assets/fonts/Rubik-VariableFont_wght.ttf
+        - asset: assets/fonts/Rubik-Italic-VariableFont_wght.ttf
+          style: italic
 
   # To add assets to your application, add an assets section, like this:
   # assets:
