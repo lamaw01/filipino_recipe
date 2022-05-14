@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../model/recipe.dart';
@@ -20,7 +22,7 @@ class FeaturedProvider with ChangeNotifier {
       _recipe = await RecipeRepo.get();
       updateState(FeaturedState.success);
     } catch (e) {
-      debugPrint(e.toString());
+      log(e.toString());
       updateState(FeaturedState.error);
     }
   }

@@ -12,7 +12,7 @@ class CategoryRepo {
         .get(Uri.parse(Config.server + "/category"))
         .timeout(const Duration(seconds: 8));
     log(response.statusCode.toString());
-    log(response.body);
+    // log(response.body);
     if (response.statusCode == 200) {
       return categoryFromJson(response.body);
     } else {

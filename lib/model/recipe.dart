@@ -20,6 +20,7 @@ class Recipe {
     required this.name,
     required this.category,
     required this.cookTime,
+    required this.prepTime,
     required this.url,
   });
 
@@ -30,7 +31,8 @@ class Recipe {
   List<String> instructions;
   String name;
   String category;
-  int cookTime;
+  String cookTime;
+  String prepTime;
   String url;
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
@@ -42,6 +44,7 @@ class Recipe {
         name: json["name"],
         category: json["category"],
         cookTime: json["cookTime"],
+        prepTime: json["prepTime"],
         url: json["url"],
       );
 
@@ -54,6 +57,7 @@ class Recipe {
         "name": name,
         "category": category,
         "cookTime": cookTime,
+        "prepTime": prepTime,
         "url": url,
       };
 }

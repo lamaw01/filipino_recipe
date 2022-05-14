@@ -12,7 +12,7 @@ class RecipeRepo {
         .get(Uri.parse(Config.server + "/featured"))
         .timeout(const Duration(seconds: 8));
     log(response.statusCode.toString());
-    log(response.body);
+    // log(response.body);
     if (response.statusCode == 200) {
       return recipeFromJson(response.body);
     } else {

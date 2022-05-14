@@ -3,8 +3,10 @@ import 'package:filipino_recipe/model/recipe.dart';
 import 'package:flutter/material.dart';
 
 class RecipeDetail extends StatelessWidget {
-  const RecipeDetail({Key? key, required this.recipe}) : super(key: key);
+  const RecipeDetail({Key? key, required this.recipe, this.isFeatured = false})
+      : super(key: key);
   final Recipe recipe;
+  final bool isFeatured;
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +43,24 @@ class RecipeDetail extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Hero(
-                tag: recipe.name,
-                child: Image(
+              if (isFeatured) ...[
+                Hero(
+                  tag: recipe.name,
+                  child: Image(
+                    height: 375.0,
+                    width: 270.0,
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(recipe.url),
+                  ),
+                ),
+              ] else ...[
+                Image(
                   height: 375.0,
                   width: 270.0,
                   fit: BoxFit.cover,
                   image: CachedNetworkImageProvider(recipe.url),
                 ),
-              ),
+              ],
               const SizedBox(height: 20.0),
               Text(
                 recipe.description,
@@ -75,7 +86,7 @@ class RecipeDetail extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: recipe.cookTime.toString() + " min",
+                          text: recipe.prepTime,
                           style: const TextStyle(
                             fontSize: 15.0,
                             fontWeight: FontWeight.w400,
@@ -104,7 +115,7 @@ class RecipeDetail extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: recipe.cookTime.toString() + " min",
+                          text: recipe.cookTime,
                           style: const TextStyle(
                             fontSize: 15.0,
                             fontWeight: FontWeight.w400,

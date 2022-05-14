@@ -15,15 +15,21 @@ class RandomProvider with ChangeNotifier {
   late int _randomNum;
   int get randomNum => _randomNum;
 
-  final _listRecipe = <String>['Chicken', 'Dessert'];
+  final _listRecipe = <String>[
+    'Chicken',
+    'Dessert',
+    'Beef',
+    'Pork',
+    'Fish',
+    'Vegetable'
+  ];
   List<String> get listRecipe => _listRecipe;
 
   var _randomRecipe = <Recipe>[];
   List<Recipe> get randomRecipe => _randomRecipe;
 
   void initRandom() {
-    _randomNum = random.nextInt(2);
-    // _randomNum = 1;
+    _randomNum = random.nextInt(5);
   }
 
   Future<void> getRandom() async {

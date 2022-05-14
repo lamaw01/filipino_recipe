@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../../provider/new_provider.dart';
+import '../detail/detail.dart';
 
 class NewWidget extends StatelessWidget {
   const NewWidget({Key? key}) : super(key: key);
@@ -73,7 +74,16 @@ class NewWidget extends StatelessWidget {
                     style: TextButton.styleFrom(
                       primary: Colors.blue,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => RecipeDetail(
+                            recipe: provider.newRecipe[i],
+                          ),
+                        ),
+                      );
+                    },
                     child: const Text(
                       'Continue Reading',
                       style: TextStyle(

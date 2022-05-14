@@ -53,11 +53,12 @@ class RandomWidget extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 5.0),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 170.0,
+                          child: Text(
                             provider.randomRecipe[i].name,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
@@ -65,17 +66,15 @@ class RandomWidget extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Text(
-                            "Cook Time: " +
-                                provider.randomRecipe[i].cookTime.toString() +
-                                " min",
-                            style: const TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w500,
-                            ),
+                        ),
+                        Text(
+                          "Cook Time: " + provider.randomRecipe[i].cookTime,
+                          style: const TextStyle(
+                            fontSize: 13.0,
+                            fontWeight: FontWeight.w500,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

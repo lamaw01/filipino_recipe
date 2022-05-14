@@ -32,6 +32,7 @@ class FeaturedWidget extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (ctx) => RecipeDetail(
                         recipe: provider.recipe[i],
+                        isFeatured: true,
                       ),
                     ),
                   );
@@ -69,9 +70,7 @@ class FeaturedWidget extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Cook Time: " +
-                                provider.recipe[i].cookTime.toString() +
-                                " min",
+                            "Cook Time: " + provider.recipe[i].cookTime,
                             style: const TextStyle(
                               fontSize: 14.0,
                               fontWeight: FontWeight.w500,
