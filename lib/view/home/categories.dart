@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../../provider/category_provider.dart';
+import '../category/category_page.dart';
 
 class CategoryWidget extends StatelessWidget {
   const CategoryWidget({Key? key}) : super(key: key);
@@ -12,8 +13,13 @@ class CategoryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<CategoryProvider>(context);
     if (provider.state == CategoryState.loading) {
-      return const SliverToBoxAdapter(
-          child: Center(child: CircularProgressIndicator()));
+      return SliverToBoxAdapter(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height / 4,
+          width: MediaQuery.of(context).size.width / 4,
+          child: const Center(child: CircularProgressIndicator()),
+        ),
+      );
     } else if (provider.state == CategoryState.error) {
       return const Center(child: Text('Error getting data'));
     } else {
@@ -26,32 +32,47 @@ class CategoryWidget extends StatelessWidget {
         ),
         delegate: SliverChildBuilderDelegate(
           (ctx, i) {
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                Opacity(
-                  opacity: 0.8,
-                  child: FadeInImage(
-                    fit: BoxFit.cover,
-                    placeholder: MemoryImage(kTransparentImage),
-                    image: CachedNetworkImageProvider(provider.category[i].url),
-                    imageErrorBuilder: (ctx, obj, stc) {
-                      return const SizedBox();
-                    },
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    provider.category[i].name,
-                    style: const TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+            return Ink(
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) => CategoryPage(
+                        category: provider.category[i].name,
+                      ),
                     ),
-                  ),
+                  );
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Opacity(
+                      opacity: 0.8,
+                      child: FadeInImage(
+                        fit: BoxFit.cover,
+                        placeholder: MemoryImage(kTransparentImage),
+                        image: CachedNetworkImageProvider(
+                            provider.category[i].url),
+                        imageErrorBuilder: (ctx, obj, stc) {
+                          return const SizedBox();
+                        },
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        provider.category[i].name,
+                        style: const TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             );
           },
           childCount: provider.category.length,

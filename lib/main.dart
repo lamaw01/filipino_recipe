@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'provider/category_page_provider.dart';
 import 'provider/category_provider.dart';
 import 'provider/featured_provider.dart';
 import 'provider/new_provider.dart';
@@ -29,6 +30,9 @@ Future<void> main() async {
           ),
           ChangeNotifierProvider<NewProvider>(
             create: (_) => NewProvider(),
+          ),
+          ChangeNotifierProvider<CategoryPageProvider>(
+            create: (_) => CategoryPageProvider(),
           ),
         ],
         child: const MyApp(),

@@ -73,7 +73,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
               ],
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 10.0)),
-            //Featured
+            // Featured
             const SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.all(10.0),
@@ -94,7 +94,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 10.0)),
-            //Random
+            // Random
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -119,7 +119,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 10.0)),
-            //Category
+            // Category
             const SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.only(left: 10.0, top: 10.0),
