@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../model/category.dart';
+import '../model/recipe.dart';
 import '../repository/category_repo.dart';
 
 enum CategoryState { loading, error, success }
@@ -9,15 +8,15 @@ class CategoryProvider with ChangeNotifier {
   var _state = CategoryState.loading;
   CategoryState get state => _state;
 
-  var _category = <Category>[];
-  List<Category> get category => _category;
+  var _categoryRecipe = <Recipe>[];
+  List<Recipe> get categoryRecipe => _categoryRecipe;
 
-  Future<void> getCategory() async {
+  Future<void> getRecipe(String category) async {
     if (_state != CategoryState.loading) {
       updateState(CategoryState.loading);
     }
     try {
-      _category = await CategoryRepo.get();
+      _categoryRecipe = await CategoryRepo.get(category);
       updateState(CategoryState.success);
     } catch (e) {
       debugPrint(e.toString());

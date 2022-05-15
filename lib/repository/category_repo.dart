@@ -4,17 +4,16 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 import '../config.dart';
-import '../model/category.dart';
+import '../model/recipe.dart';
 
 class CategoryRepo {
-  static Future<List<Category>> get() async {
+  static Future<List<Recipe>> get(String category) async {
     var response = await http
-        .get(Uri.parse(Config.server + "/category"))
-        .timeout(const Duration(seconds: 8));
+        .get(Uri.parse(Config.server + "/recipe/$category"))
+        .timeout(const Duration(seconds: 5));
     log(response.statusCode.toString());
-    // log(response.body);
     if (response.statusCode == 200) {
-      return categoryFromJson(response.body);
+      return recipeFromJson(response.body);
     } else {
       throw Exception(json.decode(response.body)['message']);
     }

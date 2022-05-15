@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../webview/webview_widget.dart';
+import '../../webview/webview_view.dart';
 
 class FooterWidget extends StatelessWidget {
   const FooterWidget({Key? key}) : super(key: key);
@@ -47,7 +47,7 @@ class FooterWidget extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (ctx) => const WebViewWidget(),
+                            builder: (ctx) => const WebViewView(),
                           ),
                         );
                       },

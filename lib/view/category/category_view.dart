@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/category_page_provider.dart';
-import 'category_recipe.dart';
+import '../../provider/category_provider.dart';
+import 'widgets/category_widget.dart';
 
-class CategoryPage extends StatefulWidget {
-  const CategoryPage({Key? key, required this.category}) : super(key: key);
+class CategoryView extends StatefulWidget {
+  const CategoryView({Key? key, required this.category}) : super(key: key);
   final String category;
 
   @override
-  State<CategoryPage> createState() => _CategoryPageState();
+  State<CategoryView> createState() => _CategoryViewState();
 }
 
-class _CategoryPageState extends State<CategoryPage> {
+class _CategoryViewState extends State<CategoryView> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      context
-          .read<CategoryPageProvider>()
-          .getRecipe(widget.category.toLowerCase());
+      context.read<CategoryProvider>().getRecipe(widget.category.toLowerCase());
     });
   }
 

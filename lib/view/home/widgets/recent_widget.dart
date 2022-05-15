@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../../provider/category_page_provider.dart';
-import '../detail/detail.dart';
+import '../../../provider/home_provider.dart';
+import '../../detail/detail_view.dart';
 
-class CategoryRecipeWidget extends StatelessWidget {
-  const CategoryRecipeWidget({Key? key}) : super(key: key);
+class RecentWidget extends StatelessWidget {
+  const RecentWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CategoryPageProvider>(context);
-    if (provider.state == CategoryPageState.loading) {
+    final provider = Provider.of<HomeProvider>(context);
+    if (provider.recentState == RecentState.loading) {
       return SliverToBoxAdapter(
         child: SizedBox(
-          height: MediaQuery.of(context).size.height / 2,
-          width: MediaQuery.of(context).size.width / 2,
+          height: MediaQuery.of(context).size.height / 4,
+          width: MediaQuery.of(context).size.width / 4,
           child: const Center(child: CircularProgressIndicator()),
         ),
       );
-    } else if (provider.state == CategoryPageState.error) {
+    } else if (provider.recentState == RecentState.error) {
       return const Center(child: Text('Error getting data'));
     } else {
       return SliverList(
@@ -37,8 +37,7 @@ class CategoryRecipeWidget extends StatelessWidget {
                     height: 160.0,
                     width: 266.0,
                     placeholder: MemoryImage(kTransparentImage),
-                    image: CachedNetworkImageProvider(
-                        provider.categoryRecipe[i].url),
+                    image: CachedNetworkImageProvider(provider.recent[i].url),
                     placeholderFit: BoxFit.fitWidth,
                     imageErrorBuilder: (ctx, obj, stc) {
                       return const SizedBox();
@@ -46,15 +45,13 @@ class CategoryRecipeWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 10.0),
                   SizedBox(
-                    // color: Colors.teal,
-                    height: 165.0,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            provider.categoryRecipe[i].name,
+                            provider.recent[i].name,
                             style: const TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.w600,
@@ -62,7 +59,7 @@ class CategoryRecipeWidget extends StatelessWidget {
                           ),
                           const SizedBox(height: 5.0),
                           Text(
-                            provider.categoryRecipe[i].description,
+                            provider.recent[i].description,
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 7,
@@ -83,8 +80,8 @@ class CategoryRecipeWidget extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (ctx) => RecipeDetail(
-                            recipe: provider.categoryRecipe[i],
+                          builder: (ctx) => DetailView(
+                            recipe: provider.recent[i],
                           ),
                         ),
                       );
@@ -104,7 +101,7 @@ class CategoryRecipeWidget extends StatelessWidget {
               ),
             );
           },
-          childCount: provider.categoryRecipe.length,
+          childCount: provider.recent.length,
           addAutomaticKeepAlives: true,
         ),
       );

@@ -1,36 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/category_provider.dart';
-import '../../provider/featured_provider.dart';
-import '../../provider/new_provider.dart';
-import '../../provider/random_provider.dart';
-import 'categories.dart';
-import 'featured.dart';
-import 'footer.dart';
-import 'new.dart';
-import 'random.dart';
+import '../../provider/home_provider.dart';
+import 'widgets/categories_widget.dart';
+import 'widgets/featured_widget.dart';
+import 'widgets/footer_widget.dart';
+import 'widgets/recent_widget.dart';
+import 'widgets/random_widget.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class HomeView extends StatefulWidget {
+  const HomeView({Key? key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
+class _HomeViewState extends State<HomeView>
+    with AutomaticKeepAliveClientMixin<HomeView> {
   @override
   void initState() {
     super.initState();
-    context.read<RandomProvider>().initRandom();
+    context.read<HomeProvider>().initRandom();
     init();
   }
 
   Future<void> init() async {
-    await context.read<FeaturedProvider>().getRecipe();
-    await context.read<CategoryProvider>().getCategory();
-    await context.read<RandomProvider>().getRandom();
-    await context.read<NewProvider>().getNew();
+    await context.read<HomeProvider>().getFeatured();
+    await context.read<HomeProvider>().getCategory();
+    await context.read<HomeProvider>().getRandom();
+    await context.read<HomeProvider>().getRecent();
   }
 
   @override
@@ -66,7 +64,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
               ),
               actions: [
                 IconButton(
-                  splashRadius: 30.0,
+                  // splashRadius: 30.0,
                   onPressed: () {},
                   icon: const Icon(Icons.search),
                 ),
@@ -98,7 +96,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Consumer<RandomProvider>(
+                child: Consumer<HomeProvider>(
                   builder: (ctx, provider, child) {
                     return Text(
                       provider.listRecipe[provider.randomNum],
@@ -135,7 +133,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
             ),
             const SliverPadding(
               padding: EdgeInsets.all(10.0),
-              sliver: CategoryWidget(),
+              sliver: CategoriesWidget(),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 10.0)),
             //Newly Added
@@ -152,7 +150,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home> {
                 ),
               ),
             ),
-            const NewWidget(),
+            const RecentWidget(),
             const FooterWidget(),
           ],
         ),

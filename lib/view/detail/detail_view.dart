@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filipino_recipe/model/recipe.dart';
 import 'package:flutter/material.dart';
 
-class RecipeDetail extends StatelessWidget {
-  const RecipeDetail({Key? key, required this.recipe, this.isFeatured = false})
+class DetailView extends StatelessWidget {
+  const DetailView({Key? key, required this.recipe, this.isFeatured = false})
       : super(key: key);
   final Recipe recipe;
   final bool isFeatured;
@@ -26,7 +26,7 @@ class RecipeDetail extends StatelessWidget {
             ),
             actions: [
               IconButton(
-                splashRadius: 30.0,
+                // splashRadius: 30.0,
                 icon: const Icon(
                   Icons.favorite_border,
                 ),

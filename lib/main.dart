@@ -1,14 +1,11 @@
+import 'package:filipino_recipe/provider/home_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'provider/category_page_provider.dart';
 import 'provider/category_provider.dart';
-import 'provider/featured_provider.dart';
-import 'provider/new_provider.dart';
-import 'provider/random_provider.dart';
-import 'view/home/home.dart';
+import 'view/home/home_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,20 +16,11 @@ Future<void> main() async {
     runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<FeaturedProvider>(
-            create: (_) => FeaturedProvider(),
+          ChangeNotifierProvider<HomeProvider>(
+            create: (_) => HomeProvider(),
           ),
           ChangeNotifierProvider<CategoryProvider>(
             create: (_) => CategoryProvider(),
-          ),
-          ChangeNotifierProvider<RandomProvider>(
-            create: (_) => RandomProvider(),
-          ),
-          ChangeNotifierProvider<NewProvider>(
-            create: (_) => NewProvider(),
-          ),
-          ChangeNotifierProvider<CategoryPageProvider>(
-            create: (_) => CategoryPageProvider(),
           ),
         ],
         child: const MyApp(),
@@ -57,7 +45,7 @@ class MyApp extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.black),
         ),
       ),
-      home: const Home(),
+      home: const HomeView(),
     );
   }
 }

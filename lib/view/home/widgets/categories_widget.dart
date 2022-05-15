@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../../provider/category_provider.dart';
-import '../category/category_page.dart';
+import '../../../provider/home_provider.dart';
+import '../../category/category_view.dart';
 
-class CategoryWidget extends StatelessWidget {
-  const CategoryWidget({Key? key}) : super(key: key);
+class CategoriesWidget extends StatelessWidget {
+  const CategoriesWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CategoryProvider>(context);
-    if (provider.state == CategoryState.loading) {
+    final provider = Provider.of<HomeProvider>(context);
+    if (provider.categoryState == CategoryState.loading) {
       return SliverToBoxAdapter(
         child: SizedBox(
           height: MediaQuery.of(context).size.height / 4,
@@ -20,7 +20,7 @@ class CategoryWidget extends StatelessWidget {
           child: const Center(child: CircularProgressIndicator()),
         ),
       );
-    } else if (provider.state == CategoryState.error) {
+    } else if (provider.categoryState == CategoryState.error) {
       return const Center(child: Text('Error getting data'));
     } else {
       return SliverGrid(
@@ -38,7 +38,7 @@ class CategoryWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (ctx) => CategoryPage(
+                      builder: (ctx) => CategoryView(
                         category: provider.category[i].name,
                       ),
                     ),

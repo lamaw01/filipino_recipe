@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../../provider/random_provider.dart';
-import '../detail/detail.dart';
+import '../../../provider/home_provider.dart';
+import '../../detail/detail_view.dart';
 
 class RandomWidget extends StatelessWidget {
   const RandomWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<RandomProvider>(context);
-    if (provider.state == RandomState.loading) {
+    final provider = Provider.of<HomeProvider>(context);
+    if (provider.randomState == RandomState.loading) {
       return const Center(child: CircularProgressIndicator());
-    } else if (provider.state == RandomState.error) {
+    } else if (provider.randomState == RandomState.error) {
       return const Center(child: Text('Error getting data'));
     } else {
       return ListView.builder(
         physics: const BouncingScrollPhysics(),
-        itemCount: provider.randomRecipe.length,
+        itemCount: provider.random.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (ctx, i) {
           return Padding(
@@ -30,8 +30,8 @@ class RandomWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (ctx) => RecipeDetail(
-                        recipe: provider.randomRecipe[i],
+                      builder: (ctx) => DetailView(
+                        recipe: provider.random[i],
                       ),
                     ),
                   );
@@ -45,8 +45,7 @@ class RandomWidget extends StatelessWidget {
                       height: 102.0,
                       width: 170.0,
                       placeholder: MemoryImage(kTransparentImage),
-                      image: CachedNetworkImageProvider(
-                          provider.randomRecipe[i].url),
+                      image: CachedNetworkImageProvider(provider.random[i].url),
                       placeholderFit: BoxFit.fitWidth,
                       imageErrorBuilder: (ctx, obj, stc) {
                         return const SizedBox();
@@ -59,7 +58,7 @@ class RandomWidget extends StatelessWidget {
                         SizedBox(
                           width: 170.0,
                           child: Text(
-                            provider.randomRecipe[i].name,
+                            provider.random[i].name,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontSize: 15.0,
@@ -68,7 +67,7 @@ class RandomWidget extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "Cook Time: " + provider.randomRecipe[i].cookTime,
+                          "Cook Time: " + provider.random[i].cookTime,
                           style: const TextStyle(
                             fontSize: 13.0,
                             fontWeight: FontWeight.w500,

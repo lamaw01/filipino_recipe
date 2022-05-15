@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../../provider/featured_provider.dart';
-import '../detail/detail.dart';
+import '../../../provider/home_provider.dart';
+import '../../detail/detail_view.dart';
 
 class FeaturedWidget extends StatelessWidget {
   const FeaturedWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<FeaturedProvider>(context);
-    if (provider.state == FeaturedState.loading) {
+    final provider = Provider.of<HomeProvider>(context);
+    if (provider.featuredState == FeaturedState.loading) {
       return const Center(child: CircularProgressIndicator());
-    } else if (provider.state == FeaturedState.error) {
+    } else if (provider.featuredState == FeaturedState.error) {
       return const Center(child: Text('Error getting data'));
     } else {
       return ListView.builder(
         physics: const BouncingScrollPhysics(),
-        itemCount: provider.recipe.length,
+        itemCount: provider.featured.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (ctx, i) {
           return Padding(
@@ -30,8 +30,8 @@ class FeaturedWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (ctx) => RecipeDetail(
-                        recipe: provider.recipe[i],
+                      builder: (ctx) => DetailView(
+                        recipe: provider.featured[i],
                         isFeatured: true,
                       ),
                     ),
@@ -42,14 +42,14 @@ class FeaturedWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Hero(
-                      tag: provider.recipe[i].name,
+                      tag: provider.featured[i].name,
                       child: FadeInImage(
                         height: 375.0,
                         width: 270.0,
                         fit: BoxFit.cover,
                         placeholder: MemoryImage(kTransparentImage),
-                        image:
-                            CachedNetworkImageProvider(provider.recipe[i].url),
+                        image: CachedNetworkImageProvider(
+                            provider.featured[i].url),
                         placeholderFit: BoxFit.fitWidth,
                         imageErrorBuilder: (ctx, obj, stc) {
                           return const SizedBox();
@@ -62,7 +62,7 @@ class FeaturedWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            provider.recipe[i].name,
+                            provider.featured[i].name,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontSize: 18.0,
@@ -70,7 +70,7 @@ class FeaturedWidget extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Cook Time: " + provider.recipe[i].cookTime,
+                            "Cook Time: " + provider.featured[i].cookTime,
                             style: const TextStyle(
                               fontSize: 14.0,
                               fontWeight: FontWeight.w500,
