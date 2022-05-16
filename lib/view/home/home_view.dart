@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/home_provider.dart';
+import '../search/search_view.dart';
 import 'widgets/categories_widget.dart';
 import 'widgets/featured_widget.dart';
 import 'widgets/footer_widget.dart';
@@ -17,17 +18,25 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView>
     with AutomaticKeepAliveClientMixin<HomeView> {
+  final sc = ScrollController();
   @override
   void initState() {
     super.initState();
     context.read<HomeProvider>().initRandom();
     init();
+    sc.addListener(() {
+      if (sc.offset >= sc.position.maxScrollExtent && !sc.position.outOfRange) {
+        if (context.read<HomeProvider>().recent.length < 15) {
+          context.read<HomeProvider>().getAdditionalRecent();
+        }
+      }
+    });
   }
 
   Future<void> init() async {
     await context.read<HomeProvider>().getFeatured();
-    await context.read<HomeProvider>().getCategory();
     await context.read<HomeProvider>().getRandom();
+    await context.read<HomeProvider>().getCategory();
     await context.read<HomeProvider>().getRecent();
   }
 
@@ -38,6 +47,7 @@ class _HomeViewState extends State<HomeView>
       body: RefreshIndicator(
         onRefresh: init,
         child: CustomScrollView(
+          controller: sc,
           slivers: [
             //AppBar
             SliverAppBar(
@@ -65,7 +75,14 @@ class _HomeViewState extends State<HomeView>
               actions: [
                 IconButton(
                   // splashRadius: 30.0,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => const SearchView(),
+                      ),
+                    );
+                  },
                   icon: const Icon(Icons.search),
                 ),
               ],

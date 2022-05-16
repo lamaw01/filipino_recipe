@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'provider/category_provider.dart';
+import 'provider/search_provider.dart';
 import 'view/home/home_view.dart';
 
 Future<void> main() async {
@@ -21,6 +22,9 @@ Future<void> main() async {
           ),
           ChangeNotifierProvider<CategoryProvider>(
             create: (_) => CategoryProvider(),
+          ),
+          ChangeNotifierProvider<SearchProvider>(
+            create: (_) => SearchProvider(),
           ),
         ],
         child: const MyApp(),

@@ -21,7 +21,13 @@ class CategoriesWidget extends StatelessWidget {
         ),
       );
     } else if (provider.categoryState == CategoryState.error) {
-      return const Center(child: Text('Error getting data'));
+      return SliverToBoxAdapter(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height / 4,
+          width: MediaQuery.of(context).size.width / 4,
+          child: const Center(child: Text('Error getting data')),
+        ),
+      );
     } else {
       return SliverGrid(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

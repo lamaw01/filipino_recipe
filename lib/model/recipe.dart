@@ -22,6 +22,7 @@ class Recipe {
     required this.cookTime,
     required this.prepTime,
     required this.url,
+    required this.timestamp,
   });
 
   String id;
@@ -34,6 +35,7 @@ class Recipe {
   String cookTime;
   String prepTime;
   String url;
+  int timestamp;
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
         id: json["id"],
@@ -46,6 +48,7 @@ class Recipe {
         cookTime: json["cookTime"],
         prepTime: json["prepTime"],
         url: json["url"],
+        timestamp: json["timestamp"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -59,5 +62,6 @@ class Recipe {
         "cookTime": cookTime,
         "prepTime": prepTime,
         "url": url,
+        "timestamp": timestamp,
       };
 }

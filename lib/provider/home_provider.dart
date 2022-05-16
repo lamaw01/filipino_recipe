@@ -99,7 +99,7 @@ class HomeProvider with ChangeNotifier {
       updateRecentState(RecentState.loading);
     }
     try {
-      _recent = await HomeRepo.getRecipe("new");
+      _recent = await HomeRepo.getRecipe("recent");
       updateRecentState(RecentState.success);
     } catch (e) {
       log(e.toString());
@@ -127,5 +127,15 @@ class HomeProvider with ChangeNotifier {
   void updateRecentState(RecentState state) {
     _recentState = state;
     notifyListeners();
+  }
+
+  Future<void> getAdditionalRecent() async {
+    try {
+      var result = await HomeRepo.getAdditional(_recent.last.timestamp);
+      _recent.addAll(result);
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

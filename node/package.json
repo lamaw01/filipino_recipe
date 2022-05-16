@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "dev": "nodemon index.js"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -14,7 +12,6 @@
     "express": "^4.18.1",
     "firebase": "^9.7.0",
     "firebase-admin": "^10.2.0",
-    "nodemon": "^2.0.16",
     "uuid": "^8.3.2"
   }
 }

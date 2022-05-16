@@ -8,9 +8,12 @@ import '../model/recipe.dart';
 
 class CategoryRepo {
   static Future<List<Recipe>> get(String category) async {
-    var response = await http
-        .get(Uri.parse(Config.server + "/recipe/$category"))
-        .timeout(const Duration(seconds: 5));
+    var response = await http.get(
+      Uri.parse(Config.server + "/recipe/$category"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).timeout(const Duration(seconds: 5));
     log(response.statusCode.toString());
     if (response.statusCode == 200) {
       return recipeFromJson(response.body);

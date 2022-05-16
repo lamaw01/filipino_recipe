@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../../../provider/category_provider.dart';
+import '../../../provider/search_provider.dart';
 import '../../detail/detail_view.dart';
 
-class CategoryRecipeWidget extends StatelessWidget {
-  const CategoryRecipeWidget({Key? key}) : super(key: key);
+class SearchResultWidget extends StatelessWidget {
+  const SearchResultWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CategoryProvider>(context);
-    if (provider.state == CategoryState.loading) {
+    final provider = Provider.of<SearchProvider>(context);
+    if (provider.state == SearchStatus.idle) {
+      return const SliverToBoxAdapter(
+        child: SizedBox(),
+      );
+    } else if (provider.state == SearchStatus.loading) {
       return SliverToBoxAdapter(
         child: SizedBox(
           height: MediaQuery.of(context).size.height / 2,
@@ -20,7 +24,7 @@ class CategoryRecipeWidget extends StatelessWidget {
           child: const Center(child: CircularProgressIndicator()),
         ),
       );
-    } else if (provider.state == CategoryState.error) {
+    } else if (provider.state == SearchStatus.error) {
       return SliverToBoxAdapter(
         child: SizedBox(
           height: MediaQuery.of(context).size.height / 2,
@@ -45,8 +49,7 @@ class CategoryRecipeWidget extends StatelessWidget {
                     height: 160.0,
                     width: 266.0,
                     placeholder: MemoryImage(kTransparentImage),
-                    image: CachedNetworkImageProvider(
-                        provider.categoryRecipe[i].url),
+                    image: CachedNetworkImageProvider(provider.search[i].url),
                     placeholderFit: BoxFit.fitWidth,
                     imageErrorBuilder: (ctx, obj, stc) {
                       return const SizedBox();
@@ -60,7 +63,7 @@ class CategoryRecipeWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            provider.categoryRecipe[i].name,
+                            provider.search[i].name,
                             style: const TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.w600,
@@ -68,7 +71,7 @@ class CategoryRecipeWidget extends StatelessWidget {
                           ),
                           const SizedBox(height: 5.0),
                           Text(
-                            provider.categoryRecipe[i].description,
+                            provider.search[i].description,
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 7,
@@ -90,7 +93,7 @@ class CategoryRecipeWidget extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (ctx) => DetailView(
-                            recipe: provider.categoryRecipe[i],
+                            recipe: provider.search[i],
                           ),
                         ),
                       );
@@ -110,7 +113,7 @@ class CategoryRecipeWidget extends StatelessWidget {
               ),
             );
           },
-          childCount: provider.categoryRecipe.length,
+          childCount: provider.search.length,
           addAutomaticKeepAlives: true,
         ),
       );
