@@ -4,7 +4,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../model/category.dart';
-import '../model/recipe.dart';
+
+import '../model/recipe_hive.dart';
 import '../repository/home_repo.dart';
 
 enum FeaturedState { loading, error, success }
@@ -43,17 +44,17 @@ class HomeProvider with ChangeNotifier {
   var _recentState = RecentState.loading;
   RecentState get recentState => _recentState;
 
-  var _featured = <Recipe>[];
-  List<Recipe> get featured => _featured;
+  var _featured = <RecipeHive>[];
+  List<RecipeHive> get featured => _featured;
 
-  var _random = <Recipe>[];
-  List<Recipe> get random => _random;
+  var _random = <RecipeHive>[];
+  List<RecipeHive> get random => _random;
 
   var _category = <Category>[];
   List<Category> get category => _category;
 
-  var _recent = <Recipe>[];
-  List<Recipe> get recent => _recent;
+  var _recent = <RecipeHive>[];
+  List<RecipeHive> get recent => _recent;
 
   Future<void> getFeatured() async {
     if (_featuredState != FeaturedState.loading) {

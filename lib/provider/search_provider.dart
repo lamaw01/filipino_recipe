@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../model/recipe.dart';
+import '../model/recipe_hive.dart';
 import '../repository/search_repo.dart';
 
 enum SearchStatus { idle, loading, error, success }
@@ -9,8 +9,8 @@ class SearchProvider with ChangeNotifier {
   var _state = SearchStatus.idle;
   SearchStatus get state => _state;
 
-  var _search = <Recipe>[];
-  List<Recipe> get search => _search;
+  var _search = <RecipeHive>[];
+  List<RecipeHive> get search => _search;
 
   Future<void> getSearch(String keyword) async {
     if (_state != SearchStatus.loading) {

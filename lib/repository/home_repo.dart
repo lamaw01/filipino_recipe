@@ -5,16 +5,16 @@ import 'package:filipino_recipe/model/category.dart';
 import 'package:http/http.dart' as http;
 
 import '../config.dart';
-import '../model/recipe.dart';
+import '../model/recipe_hive.dart';
 
 class HomeRepo {
-  static Future<List<Recipe>> getRecipe(String url) async {
+  static Future<List<RecipeHive>> getRecipe(String url) async {
     var response = await http.get(
       Uri.parse(Config.server + "/$url"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-    ).timeout(const Duration(seconds: 5));
+    ).timeout(const Duration(seconds: 10));
     log(response.statusCode.toString());
     if (response.statusCode == 200) {
       return recipeFromJson(response.body);
@@ -29,7 +29,7 @@ class HomeRepo {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-    ).timeout(const Duration(seconds: 5));
+    ).timeout(const Duration(seconds: 10));
     log(response.statusCode.toString());
     if (response.statusCode == 200) {
       return categoryFromJson(response.body);
@@ -38,7 +38,7 @@ class HomeRepo {
     }
   }
 
-  static Future<List<Recipe>> getAdditional(int timestamp) async {
+  static Future<List<RecipeHive>> getAdditional(int timestamp) async {
     var response = await http
         .post(
           Uri.parse(Config.server + "/additional_recent"),
@@ -51,7 +51,7 @@ class HomeRepo {
             },
           ),
         )
-        .timeout(const Duration(seconds: 5));
+        .timeout(const Duration(seconds: 10));
     log(response.statusCode.toString());
     if (response.statusCode == 200) {
       return recipeFromJson(response.body);

@@ -1,15 +1,32 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:filipino_recipe/model/recipe.dart';
+
 import 'package:flutter/material.dart';
+
+import '../../model/recipe_hive.dart';
+import '../../service/recipe_box.dart';
+
+bool checkisFavorite(String id) {
+  bool isInTheBox = false;
+  for (var boxes in RecipeBox.getFavorties().values) {
+    if (boxes.id == id) {
+      isInTheBox = true;
+      break;
+    }
+  }
+  return isInTheBox;
+}
 
 class DetailView extends StatelessWidget {
   const DetailView({Key? key, required this.recipe, this.isFeatured = false})
       : super(key: key);
-  final Recipe recipe;
+  final RecipeHive recipe;
   final bool isFeatured;
 
   @override
   Widget build(BuildContext context) {
+    final box = RecipeBox.getFavorties();
+    bool isFavorite = checkisFavorite(recipe.id);
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -25,12 +42,31 @@ class DetailView extends StatelessWidget {
               ),
             ),
             actions: [
-              IconButton(
-                // splashRadius: 30.0,
-                icon: const Icon(
-                  Icons.favorite_border,
+              StatefulBuilder(
+                builder: (ctx, setState) => IconButton(
+                  // splashRadius: 30.0,
+                  icon: isFavorite
+                      ? const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : const Icon(
+                          Icons.favorite_border,
+                        ),
+                  onPressed: () {
+                    if (!isFavorite) {
+                      box.add(recipe);
+                      setState(() {
+                        isFavorite = checkisFavorite(recipe.id);
+                      });
+                    } else {
+                      recipe.delete();
+                      setState(() {
+                        isFavorite = checkisFavorite(recipe.id);
+                      });
+                    }
+                  },
                 ),
-                onPressed: () {},
               ),
             ],
           ),

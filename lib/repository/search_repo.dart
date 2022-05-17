@@ -4,10 +4,10 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 import '../config.dart';
-import '../model/recipe.dart';
+import '../model/recipe_hive.dart';
 
 class SearchRepo {
-  static Future<List<Recipe>> getSearch(String keyword) async {
+  static Future<List<RecipeHive>> getSearch(String keyword) async {
     var response = await http
         .post(
           Uri.parse(Config.server + "/search"),
@@ -20,7 +20,7 @@ class SearchRepo {
             },
           ),
         )
-        .timeout(const Duration(seconds: 5));
+        .timeout(const Duration(seconds: 10));
     log(response.statusCode.toString());
     if (response.statusCode == 200) {
       return recipeFromJson(response.body);

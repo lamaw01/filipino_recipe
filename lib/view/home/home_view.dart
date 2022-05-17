@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/home_provider.dart';
+import '../favorites/favorites_view.dart';
 import '../search/search_view.dart';
 import 'widgets/categories_widget.dart';
 import 'widgets/featured_widget.dart';
@@ -176,7 +177,14 @@ class _HomeViewState extends State<HomeView>
         child: const Icon(
           Icons.favorite,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (ctx) => const FavoritesView(),
+            ),
+          );
+        },
         backgroundColor: Colors.red,
       ),
     );

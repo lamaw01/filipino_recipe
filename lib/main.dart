@@ -1,10 +1,11 @@
-import 'package:filipino_recipe/provider/home_provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
+import 'model/recipe_hive.dart';
 import 'provider/category_provider.dart';
+import 'provider/home_provider.dart';
 import 'provider/search_provider.dart';
 import 'view/home/home_view.dart';
 
@@ -13,7 +14,9 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((_) async {
-    await Firebase.initializeApp();
+    await Hive.initFlutter();
+    Hive.registerAdapter(RecipeHiveAdapter());
+    await Hive.openBox<RecipeHive>('favorites');
     runApp(
       MultiProvider(
         providers: [

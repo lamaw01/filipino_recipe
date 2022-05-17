@@ -1,11 +1,11 @@
 {
-  "name": "app",
+  "name": "filipino_recipe_node_app",
   "version": "1.0.0",
-  "description": "",
+  "description": "Filipino Recipe node app",
   "main": "index.js",
   "scripts": {},
   "keywords": [],
-  "author": "",
+  "author": "Janrey Dumaog",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
