@@ -2,7 +2,7 @@
     package="com.example.filipino_recipe">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="filipino_recipe"
+        android:label="Filipino Recipe"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
