@@ -24,7 +24,6 @@ class RecipeHive extends HiveObject {
     required this.category,
     required this.cookTime,
     required this.prepTime,
-    required this.url,
     required this.timestamp,
   });
 
@@ -55,9 +54,6 @@ class RecipeHive extends HiveObject {
   @HiveField(8)
   String prepTime;
 
-  @HiveField(9)
-  String url;
-
   @HiveField(10)
   int timestamp;
 
@@ -71,7 +67,6 @@ class RecipeHive extends HiveObject {
         category: json["category"],
         cookTime: json["cookTime"],
         prepTime: json["prepTime"],
-        url: json["url"],
         timestamp: json["timestamp"],
       );
 
@@ -85,7 +80,6 @@ class RecipeHive extends HiveObject {
         "category": category,
         "cookTime": cookTime,
         "prepTime": prepTime,
-        "url": url,
         "timestamp": timestamp,
       };
 }

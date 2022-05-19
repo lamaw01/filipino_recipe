@@ -43,7 +43,7 @@ class RecentWidget extends StatelessWidget {
                     height: 160.0,
                     width: 266.0,
                     placeholder: MemoryImage(kTransparentImage),
-                    image: CachedNetworkImageProvider(provider.recent[i].url),
+                    image: CachedNetworkImageProvider(provider.recent[i].image),
                     placeholderFit: BoxFit.fitWidth,
                     imageErrorBuilder: (ctx, obj, stc) {
                       return const SizedBox();

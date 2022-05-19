@@ -45,7 +45,8 @@ class RandomWidget extends StatelessWidget {
                       height: 102.0,
                       width: 170.0,
                       placeholder: MemoryImage(kTransparentImage),
-                      image: CachedNetworkImageProvider(provider.random[i].url),
+                      image:
+                          CachedNetworkImageProvider(provider.random[i].image),
                       placeholderFit: BoxFit.fitWidth,
                       imageErrorBuilder: (ctx, obj, stc) {
                         return const SizedBox();

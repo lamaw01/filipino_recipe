@@ -26,7 +26,6 @@ class RecipeHiveAdapter extends TypeAdapter<RecipeHive> {
       category: fields[6] as String,
       cookTime: fields[7] as String,
       prepTime: fields[8] as String,
-      url: fields[9] as String,
       timestamp: fields[10] as int,
     );
   }
@@ -34,7 +33,7 @@ class RecipeHiveAdapter extends TypeAdapter<RecipeHive> {
   @override
   void write(BinaryWriter writer, RecipeHive obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,8 +52,6 @@ class RecipeHiveAdapter extends TypeAdapter<RecipeHive> {
       ..write(obj.cookTime)
       ..writeByte(8)
       ..write(obj.prepTime)
-      ..writeByte(9)
-      ..write(obj.url)
       ..writeByte(10)
       ..write(obj.timestamp);
   }

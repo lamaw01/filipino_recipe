@@ -49,7 +49,7 @@ class FeaturedWidget extends StatelessWidget {
                         fit: BoxFit.cover,
                         placeholder: MemoryImage(kTransparentImage),
                         image: CachedNetworkImageProvider(
-                            provider.featured[i].url),
+                            provider.featured[i].image),
                         placeholderFit: BoxFit.fitWidth,
                         imageErrorBuilder: (ctx, obj, stc) {
                           return const SizedBox();

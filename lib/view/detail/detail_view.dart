@@ -85,7 +85,7 @@ class DetailView extends StatelessWidget {
                         height: 375.0,
                         width: 270.0,
                         fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(recipe.url),
+                        image: CachedNetworkImageProvider(recipe.image),
                       ),
                     ),
                   ] else ...[
@@ -93,7 +93,7 @@ class DetailView extends StatelessWidget {
                       height: 375.0,
                       width: 270.0,
                       fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(recipe.url),
+                      image: CachedNetworkImageProvider(recipe.image),
                     ),
                   ],
                   const SizedBox(height: 20.0),

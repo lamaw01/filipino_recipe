@@ -59,7 +59,7 @@ class CategoriesWidget extends StatelessWidget {
                         fit: BoxFit.cover,
                         placeholder: MemoryImage(kTransparentImage),
                         image: CachedNetworkImageProvider(
-                            provider.category[i].url),
+                            provider.category[i].image),
                         imageErrorBuilder: (ctx, obj, stc) {
                           return const SizedBox();
                         },

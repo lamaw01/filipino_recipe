@@ -46,7 +46,7 @@ class CategoryRecipeWidget extends StatelessWidget {
                     width: 266.0,
                     placeholder: MemoryImage(kTransparentImage),
                     image: CachedNetworkImageProvider(
-                        provider.categoryRecipe[i].url),
+                        provider.categoryRecipe[i].image),
                     placeholderFit: BoxFit.fitWidth,
                     imageErrorBuilder: (ctx, obj, stc) {
                       return const SizedBox();
