@@ -13,7 +13,7 @@ class CategoryRepo {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-    ).timeout(const Duration(seconds: 10));
+    ).timeout(const Duration(seconds: 20));
     log(response.statusCode.toString());
     if (response.statusCode == 200) {
       return recipeFromJson(response.body);
